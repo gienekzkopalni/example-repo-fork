@@ -39,14 +39,14 @@ jobs:
               continue
             fi
 
-            if ! git show-ref --quiet --verify refs/heads/$branch >/dev/null 2>&1; then
-              echo "Creating new branch: $branch"
-              git checkout -b $branch upstream/$branch
-              git push origin $branch
-            else
+            if git show-ref --quiet --verify refs/heads/$branch || git show-ref --quiet --verify "refs/remotes/origin/$branch"; then
               echo "Branch $branch exists. Syncing..."
               git checkout $branch
               git merge --ff-only upstream/$branch || echo "Merge conflict, please resolve manually."
+              git push origin $branch
+            else
+              echo "Creating new branch: $branch"
+              git checkout -b $branch upstream/$branch
               git push origin $branch
             fi
           done
