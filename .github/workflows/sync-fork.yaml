@@ -39,7 +39,7 @@ jobs:
               continue
             fi
 
-            if ! git rev-parse --verify origin/$branch >/dev/null 2>&1; then
+            if ! git show-ref --quiet --verify origin/heads/$branch >/dev/null 2>&1; then
               echo "Creating new branch: $branch"
               git checkout -b $branch upstream/$branch
               git push origin $branch
