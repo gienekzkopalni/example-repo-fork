@@ -30,6 +30,10 @@ jobs:
       #     git fetch upstream --prune
       #     echo "Listing all remote branches:"
       #     git branch -r
+      - name: Set Git identity
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
 
       - name: Sync with new branches
         run: |
