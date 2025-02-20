@@ -42,7 +42,7 @@ jobs:
             if git show-ref --quiet --verify refs/heads/$branch || git show-ref --quiet --verify "refs/remotes/origin/$branch"; then
               echo "Branch $branch exists. Syncing..."
               git checkout --track origin/$branch 2>/dev/null || git checkout $branch
-              git merge --ff-only upstream/$branch || echo "Merge conflict, please resolve manually."
+              git rebase upstream/$branch || (echo "Rebase conflict, please resolve manually." && exit 1)
               git push origin $branch
             else
               echo "Creating new branch: $branch"
