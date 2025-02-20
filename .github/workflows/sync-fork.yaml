@@ -41,7 +41,7 @@ jobs:
 
             if ! git rev-parse --verify origin/$branch >/dev/null 2>&1; then
               echo "Creating new branch: $branch"
-              git checkout -b $branch upstream/branch
+              git checkout -b $branch upstream/$branch
               git push origin $branch
             else
               echo "Branch $branch exists. Syncing..."
