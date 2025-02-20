@@ -1,0 +1,48 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout forked repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/mniemcewicz/example-repo.git
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch all branches from upstream
+        run: git fetch upstream
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync with new branches
+        run: |
+          for branch in $(git branch -r | grep 'upstream/' | sed 's#upstream/##'); do
+            if [[ $branch == dependabot/* ]]; then
+              echo "Skipping branch: $branch"
+              continue
+            fi
+
+            if ! git rev-parse --verify origin/$branch >/dev/null 2>&1; then
+              echo "Creating new branch: $branch"
+              git checkout -b $branch upstream/branch
+              git push origin $branch
+            else
+              echo "Branch $branch exists. Syncing..."
+              git checkout $branch
+              git merge --ff-only upstream/$branch || echo "Merge conflict, please resolve manually."
+              git push origin $branch
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
