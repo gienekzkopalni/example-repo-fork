@@ -47,7 +47,7 @@ jobs:
               echo "Branch $branch exists. Syncing..."
               git checkout --track origin/$branch 2>/dev/null || git checkout $branch
               git rebase upstream/$branch || (echo "Rebase conflict, please resolve manually." && exit 1)
-              git push origin $branch
+              git push origin $branch --force
             else
               echo "Creating new branch: $branch"
               git checkout -b $branch upstream/$branch
