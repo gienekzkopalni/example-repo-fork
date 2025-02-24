@@ -21,7 +21,7 @@ jobs:
 
       - name: Remove stale branches
         run: |
-          for branch in $(git branch -r | grep 'origin/' | sed 's#origin/##'); do
+          for branch in $(git branch -r | grep 'origin/' |  grep -v 'origin/HEAD' | sed 's#origin/##'); do
             if [[ ! $(git branch -r | grep "upstream/$branch") ]]; then
               echo "Branch $branch no longer exists in upstream. Deleting..."
               git push origin --delete $branch || echo "Failed to delete $branch"
