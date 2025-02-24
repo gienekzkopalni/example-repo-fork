@@ -25,6 +25,5 @@ jobs:
             if [[ ! $(git branch -r | grep "upstream/$branch") ]]; then
               echo "Branch $branch no longer exists in upstream. Deleting..."
               git push origin --delete $branch || echo "Failed to delete $branch"
-              git branch -D $branch || echo "Failed to delete local branch $branch"
             fi
           done
